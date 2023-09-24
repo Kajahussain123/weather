@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+  <section class="vh-100"
+    style="background-image: url(./images/lola-guti-KtJpghtFTuI-unsplash.jpg); background-size: cover;">
+    <div class="input-group">
+      <div class=" in1 form-outline">
+        <input id="cname" type="search" class="form-control" placeholder="Search City" />
+      </div>
+      <button onclick="Search()" type="button" class=" btn2 btn btn-primary">
+        <i class="fas fa-search"></i>
+      </button>
+      <button onclick="getLocation()" class="btn1 btn btn-success">Current Location</button>
+    </div>
+    <p id="demo"></p>
+    <div id="result" class="mt-5">
+
+    </div>
+
+    <div class="container py-5 h-100">
+
+      <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col-md-8 col-lg-6 col-xl-4">
+
+          <div class="card" style="color: #4B515D; border-radius: 35px;">
+            <div class="card-body p-8">
+
+              <div class="d-flex">
+                <h6 class="flex-grow-1">Kochi</h6>
+                <h6 class="flex-grow-1" id="current-date">23/09/2023</h6>
+                <h6 id="current-time">10:07</h6>
+              </div>
+
+              <div class="d-flex flex-column text-center mt-5 mb-4">
+                <h6 class="display-4 mb-0 font-weight-bold" style="color: #1C2331;"> 26°C </h6>
+                <span class="small" style="color: #868B94">Stormy</span>
+              </div>
+
+              <div class="d-flex align-items-center">
+                <div class="flex-grow-1" style="font-size: 1rem;">
+                  <div><i class="fas fa-wind fa-fw" style="color: #868B94;"></i> <span class="ms-1"> 40 km/h
+                    </span></div>
+                  <div><i class="fas fa-tint fa-fw" style="color: #868B94;"></i> <span class="ms-1"> 84% </span>
+                  </div>
+
+                  <div><i class="fa-solid fa-temperature-high" style="color: #868B94;"></i> <span class="ms-1"> 60°C
+                    </span>
+                  </div>
+                  <div><i class="fa-solid fa-temperature-low" style="color: #868B94;"></i> <span class="ms-1"> 30°C
+                    </span>
+                  </div>
+
+                </div>
+                <div>
+                  <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-weather/ilu1.webp"
+                    width="100px">
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</body>
+<script>
+  var x = document.getElementById("demo");
+
+  function getLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+      x.innerHTML = "Geolocation is not supported by this browser.";
+    }
+  }
+
+  function showPosition(position) {
+    x.innerHTML = "Latitude: " + position.coords.latitude +
+      "<br>Longitude: " + position.coords.longitude;
+  }
+
+  function Search() {
+    Place = cname.value
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${Place}&appid=b41ec3be35c7dac8aabbc21ba253137a`).then(data => data.json())
+      .then(outdata => DisplayData(outdata))
+
+    function DisplayData(data) {
+      name = data.name
+      temperature = data.main.temp
+      weather = data.weather[0].main
+      windspeed = data.wind.speed
+      humidity = data.main.humidity
+      maxtemp = data.main.temp_max
+      mintemp = data.main.temp_min
+
+      now = new Date();
+      hours = now.getHours().toString().padStart(2, "0");
+      minutes = now.getMinutes().toString().padStart(2, "0");
+      timeString = hours + ":" + minutes
+
+      date = now.getDate().toString().padStart(2, "0");
+      month = (now.getMonth() + 1).toString().padStart(2, "0");
+      year = now.getFullYear();
+      dateString = `${ date } /${month}/${ year }`
+
+      result.innerHTML = `  <div class="container py-5 h-100">
+          
+          <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-md-8 col-lg-6 col-xl-4">
+      
+              <div class="card" style="color: #4B515D; border-radius: 35px; z-index: 1;">
+                <div class="card-body p-8">
+      
+                  <div class="d-flex">
+                    <h6 class="flex-grow-1">${name}</h6>
+                    <h6 class="flex-grow-1" id="current-date">${dateString}</h6>
+                    <h6 id="current-time">${timeString}</h6>
+                  </div>
+      
+                  <div class="d-flex flex-column text-center mt-5 mb-4">
+                    <h6 class="display-4 mb-0 font-weight-bold" style="color: #1C2331;"> ${temperature}F </h6>
+                    <span class="small" style="color: #868B94">${weather}</span>
+                  </div>
+      
+                  <div class="d-flex align-items-center">
+                    <div class="flex-grow-1" style="font-size: 1rem;">
+                      <div><i class="fas fa-wind fa-fw" style="color: #868B94;"></i> <span class="ms-1"> ${windspeed} km/h
+                        </span></div>
+                      <div><i class="fas fa-tint fa-fw" style="color: #868B94;"></i> <span class="ms-1">${humidity} %</span>
+                      </div>
+                     
+                      <div><i class="fa-solid fa-temperature-high" style="color: #868B94;"></i> <span class="ms-1"> ${maxtemp}F </span>
+                      </div>
+                      <div><i class="fa-solid fa-temperature-low" style="color: #868B94;"></i> <span class="ms-1"> ${mintemp}F </span>
+                      </div>
+
+                    </div>
+                    <div>
+                      <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-weather/ilu1.webp"
+                        width="100px">
+                    </div>
+                  </div>
+      
+                </div>
+              </div>
+      
+            </div>
+          </div>
+      
+`
+    }
+  }
+</script>
+
+</html>
